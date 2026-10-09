@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kiwaloshafic720-cmd.github.io/dls-arena-tracker/sitemap.xml
