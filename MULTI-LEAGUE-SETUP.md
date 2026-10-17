@@ -1,15 +1,24 @@
-# Arena League Hub database setup
+# Arena League Hub setup
 
-The site uses the existing Supabase project configured in `online-config.js`. Keep that file private and unchanged.
+The site uses the existing Supabase project configured in `online-config.js`. Keep its public project URL and publishable key in that file; never put a service-role key in browser code.
 
-## Activate accounts and league storage
+## Database setup
 
-1. Open the existing Supabase project and go to **SQL Editor**.
-2. Open `supabase-multileague-setup.sql` from this repository, copy its full contents into a new SQL query, and run it.
-3. In **Authentication → URL Configuration**, make sure the deployed GitHub Pages address is allowed as a site URL and redirect URL:
-   `https://kiwaloshafic720-cmd.github.io/dls-arena-tracker/`
-4. Open the site over HTTPS, create/sign into an account, and create a league.
+1. In the existing Supabase project, confirm the `public.leagues` table is present. If it is missing, run `supabase-multileague-setup.sql` once.
+2. Before changing a production database, make a Supabase backup/export of the existing `leagues` table and verify it is restorable.
+3. Run `supabase-player-accounts.sql` to add account roles, unique league codes, player memberships, team branding, and logo storage policies.
+4. In **Authentication → URL Configuration**, allow the deployed GitHub Pages address as a site URL and redirect URL: `https://kiwaloshafic720-cmd.github.io/dls-arena-tracker/`.
 
-The SQL creates a new `leagues` table. Signed-in accounts can read or change only rows they own. A player link contains a random share code that opens one league read-only; visitors cannot list leagues. The old `tournament_state` table and its data are not changed or imported.
+The player accounts migration adds a `join_code` column and backfills a code for each existing league. It does not update, copy, or delete `leagues.state`. Existing scores, match history, and standings therefore remain in their existing state document. Player memberships and logos are stored separately. The migration makes no changes to the older `tournament_state` data.
 
-New accounts may need to verify their email before signing in. Supabase Auth email settings control that behavior. The app also uses Supabase Auth password reset email delivery.
+## Roles and permissions
+
+- The configured platform owner is registered in the private `platform_owners` table.
+- The user who owns a league is its league admin and can manage its roster and results.
+- A signed-in player claims one unclaimed roster entry with the unique league code. The league admin approves the claim before the player can change that team's badge or logo.
+- Players have no update policy on `leagues`, so they cannot change scores, matches, wins, losses, points, or standings.
+- Custom logos use the dedicated public `dls-team-logos` bucket. Uploads are limited to PNG, JPEG, and WebP images under 2 MB; storage rules restrict writes to the team owner or league admin.
+
+## Deploy
+
+After reviewing the local changes and applying the database migration, publish the updated static files to GitHub Pages. Publishing is a separate step; these files do not deploy or alter production data by themselves.
