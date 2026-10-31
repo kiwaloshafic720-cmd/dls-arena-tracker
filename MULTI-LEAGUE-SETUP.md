@@ -19,6 +19,10 @@ The player accounts migration adds a `join_code` column and backfills a code for
 - Players have no update policy on `leagues`, so they cannot change scores, matches, wins, losses, points, or standings.
 - Custom logos use the dedicated public `dls-team-logos` bucket. Uploads are limited to PNG, JPEG, and WebP images under 2 MB; storage rules restrict writes to the team owner or league admin.
 
+## Knockout stage
+
+An admin can start a top-four knockout bracket from the current standings. Seeds play 1 vs 4 and 2 vs 3, followed by a final. Knockout scores are stored alongside the league state but do not change the round-robin matches or table. Starting the bracket locks league scores and roster; admins can reset only the knockout bracket if it needs reseeding. Tied knockout matches require the admin to record the penalty winner.
+
 ## Deploy
 
 After reviewing the local changes and applying the database migration, publish the updated static files to GitHub Pages. Publishing is a separate step; these files do not deploy or alter production data by themselves.
