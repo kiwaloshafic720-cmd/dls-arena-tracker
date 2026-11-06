@@ -11,6 +11,10 @@ The site uses the existing Supabase project configured in `online-config.js`. Ke
 
 The player accounts migration adds a `join_code` column and backfills a code for each existing league. It does not update, copy, or delete `leagues.state`. Existing scores, match history, and standings therefore remain in their existing state document. Player memberships and logos are stored separately. The migration makes no changes to the older `tournament_state` data.
 
+## Google sign-in
+
+The sign-in dialog includes **Continue with Google**. To activate it, enable Google under **Supabase → Authentication → Sign-in / Providers**, enter the Google OAuth client credentials, and add the Supabase callback URL shown in that provider setup to the Google OAuth client. In **Authentication → URL Configuration**, allow the deployed GitHub Pages address as a redirect URL. The app returns users to the same league page after Google sign-in.
+
 ## Roles and permissions
 
 - The configured platform owner is registered in the private `platform_owners` table.
